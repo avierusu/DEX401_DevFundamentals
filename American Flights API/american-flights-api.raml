@@ -1,63 +1,61 @@
 #%RAML 1.0
 title: American Flights API
+version: v1
 description: This specification defines a few endpoints, as well as methods for each endpoint, for American Airlines
-version: v1.0
 protocols:
   - HTTP
   - HTTPS
+
+types:
+  AmericanFlight: !include /exchange_modules/68ef9520-24e9-4cf2-b2f5-620025690913/training-american-flight-data-type/1.0.1/AmericanFlightDataType.raml
+
 /flights:
   get:
     displayName: Get Flights
     description: Get a list of all flights
     queryParameters:
-      destination?:
+      destination:
         description: City that the flight lands in
+        required: false
+        type: string
         enum:
           - SFO
           - CLE
           - LAX
-        type: string
     responses:
-      "200":
+      200:
         body:
           application/json:
-            example:
-              strict: true
-              value:
-                output: Retrieving a list of flights...
-            type: object
+            type: AmericanFlight[]
+            examples:
+              output: !include /exchange_modules/68ef9520-24e9-4cf2-b2f5-620025690913/training-american-flights-example/1.0.1/AmericanFlightsExample.raml
   post:
     displayName: Create Flight
     description: Create a new flight
     body:
       application/json:
-        example:
-          strict: true
-          value:
-            input: Flight data
-        type: object
+        type: AmericanFlight
+        examples:
+          input: !include /examples/AmericanFlightNoIDExample.raml
     responses:
-      "201":
+      201:
         body:
           application/json:
-            example:
-              strict: true
-              value:
-                output: Adding new flight (but not really)...
             type: object
+            example:
+              value:
+                output: Flight added successfully (but not really)
 /flights/{ID}:
   get:
     displayName: Get Flight by ID
     description: Get a single flight corresponding to the requested ID
     responses:
-      "200":
+      200:
         body:
           application/json:
-            example:
-              strict: true
-              value:
-                output: Retrieving flight...
-            type: object
+            type: AmericanFlight
+            examples:
+              output: !include /examples/AmericanFlightExample.raml
   uriParameters:
     ID:
       description: Unique identifier that corresponds to a single flight
