@@ -1,0 +1,68 @@
+#%RAML 1.0
+title: American Flights API
+description: This specification defines a few endpoints, as well as methods for each endpoint, for American Airlines
+version: v1.0
+protocols:
+  - HTTP
+  - HTTPS
+/flights:
+  get:
+    displayName: Get Flights
+    description: Get a list of all flights
+    queryParameters:
+      destination?:
+        description: City that the flight lands in
+        enum:
+          - SFO
+          - CLE
+          - LAX
+        type: string
+    responses:
+      "200":
+        body:
+          application/json:
+            example:
+              strict: true
+              value:
+                output: Retrieving a list of flights...
+            type: object
+  post:
+    displayName: Create Flight
+    description: Create a new flight
+    body:
+      application/json:
+        example:
+          strict: true
+          value:
+            input: Flight data
+        type: object
+    responses:
+      "201":
+        body:
+          application/json:
+            example:
+              strict: true
+              value:
+                output: Adding new flight (but not really)...
+            type: object
+/flights/{ID}:
+  get:
+    displayName: Get Flight by ID
+    description: Get a single flight corresponding to the requested ID
+    responses:
+      "200":
+        body:
+          application/json:
+            example:
+              strict: true
+              value:
+                output: Retrieving flight...
+            type: object
+  uriParameters:
+    ID:
+      description: Unique identifier that corresponds to a single flight
+      default: 3
+      type: number
+      minimum: 1
+      maximum: 11
+      format: int
