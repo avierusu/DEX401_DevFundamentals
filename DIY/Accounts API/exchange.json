@@ -1,0 +1,10 @@
+{
+  "main": "accounts-api.raml",
+  "name": "Accounts API",
+  "groupId": "36b88972-d141-4863-86ba-0db884898f87",
+  "assetId": "accounts-api",
+  "version": "1.0.0",
+  "classifier": "raml",
+  "tags": [],
+  "descriptorVersion": "1.0.0"
+}

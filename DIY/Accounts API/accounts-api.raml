@@ -1,0 +1,59 @@
+#%RAML 1.0
+title: Accounts API
+version: v1
+description: This specification defines a couple resources and methods to access Account data
+protocols:
+  - HTTP
+  - HTTPS
+
+
+/accounts:
+  get:
+    displayName: Get Accounts
+    description: Get a list of accounts
+    queryParameters:
+      accountType?:
+        description: Type of account
+        enum:
+          - business
+          - personal
+        type: string
+      accountName?:
+        description: Name of the customer the account belongs to
+        type: string
+    headers:
+      userID:
+        description: The person or system requesting the data
+        type: string
+    responses:
+      "200":
+        body:
+          application/json:
+            example:
+              strict: true
+              value:
+                output: list of accounts
+            type: object
+  post:
+    displayName: Create Account
+    description: Create a new customer account
+    headers:
+      userID:
+        description: The person or system requesting the data
+        type: string
+    body:
+      application/json:
+        example:
+          strict: true
+          value:
+            input: array of accounts
+        type: object
+    responses:
+      "201":
+        body:
+          application/json:
+            example:
+              strict: true
+              value:
+                message: Accounts created
+            type: object
