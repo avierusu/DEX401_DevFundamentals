@@ -6,34 +6,34 @@ protocols:
   - HTTP
   - HTTPS
 
+types:
+  AccountType: !include /datatypes/Account.raml
+  Account: !include /datatypes/Account.raml
 
 /accounts:
   get:
     displayName: Get Accounts
     description: Get a list of accounts
     queryParameters:
-      accountType?:
+      accountType:
         description: Type of account
-        enum:
-          - business
-          - personal
-        type: string
-      accountName?:
+        required: false
+        type: AccountType
+      accountName:
         description: Name of the customer the account belongs to
+        required: false
         type: string
     headers:
       userID:
         description: The person or system requesting the data
         type: string
     responses:
-      "200":
+      200:
         body:
           application/json:
-            example:
-              strict: true
-              value:
-                output: list of accounts
-            type: object
+            type: Account[]
+            examples:
+              !include /examples/AccountsExample.raml
   post:
     displayName: Create Account
     description: Create a new customer account
@@ -43,17 +43,13 @@ protocols:
         type: string
     body:
       application/json:
-        example:
-          strict: true
-          value:
-            input: array of accounts
-        type: object
+        type: Account[]
+        examples:
+          !include /examples/NewAccountsExample.raml
     responses:
-      "201":
+      201:
         body:
           application/json:
-            example:
-              strict: true
-              value:
-                message: Accounts created
             type: object
+            example:
+              message: Accounts created
