@@ -1,0 +1,6 @@
+# This file contains properties and values to be used in the TEST environment
+
+# HTTP Listener Config values
+http:
+  hostName:               "0.0.0.0"
+  port:                   "8081"
