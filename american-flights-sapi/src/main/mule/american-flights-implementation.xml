@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="
-	http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+	http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="getFlights" doc:id="b59dc460-d3c1-4d95-923c-508be988d336" >
+		<http:listener doc:name="Listener" doc:id="91b6bc13-12c0-4a30-89dd-d6427f789f6e" config-ref="httpListenerConnectorConfig" path="/flights" allowedMethods="GET"/>
+		<db:select doc:name="Select" doc:id="c294797a-3107-4e0c-8991-1873c263af56" config-ref="americanFlightsGenericDatabase">
+			<db:sql ><![CDATA[SELECT *
+  FROM american]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="1c85e31b-ccb8-49e3-9c63-1ef90f302d99" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="1d940162-3ecf-49da-a467-d10f6e6e1d96" message="#[payload]"/>
+	</flow>
+</mule>
