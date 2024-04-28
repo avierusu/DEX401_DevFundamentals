@@ -4,3 +4,10 @@
 http:
   hostName:               "localhost"
   port:                   "7081"
+
+
+# Derby Database properties
+american:
+  db:
+    url:                  "jdbc:derby://localhost:1527/memory:training"
+    driver:               "org.apache.derby.jdbc.ClientDriver"
