@@ -15,6 +15,10 @@
 
 		<app.runtime>4.7.0</app.runtime>
 		<mule.maven.plugin.version>4.2.0</mule.maven.plugin.version>
+		<!-- Update these values whenever my Anypoint Platform account changes -->
+		<american.flights.spec.group.id>928823c8-6dd4-4b10-a7d7-91a8da736281</american.flights.spec.group.id>
+		<american.flights.spec.artifact.id>american-flights-api</american.flights.spec.artifact.id>
+		<american.flights.spec.version>1.0.1</american.flights.spec.version>
 	</properties>
 
 	<build>
@@ -46,6 +50,14 @@
 	</build>
 
 	<dependencies>
+		<!-- This is my American Flights API RAML specification dependency -->
+		<dependency>
+			<groupId>${american.flights.spec.group.id}</groupId>
+			<artifactId>${american.flights.spec.artifact.id}</artifactId>
+			<version>${american.flights.spec.version}</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
+		</dependency>
 		<dependency>
 			<groupId>org.mule.connectors</groupId>
 			<artifactId>mule-sockets-connector</artifactId>
@@ -74,6 +86,19 @@
 			<version>1.9.3</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-apikit-module</artifactId>
+			<version>1.10.4</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<!-- <dependency>
+			<groupId>928823c8-6dd4-4b10-a7d7-91a8da736281</groupId>
+			<artifactId>american-flights-api</artifactId>
+			<version>1.0.1</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
+		</dependency> -->
 	</dependencies>
 
 	<repositories>
