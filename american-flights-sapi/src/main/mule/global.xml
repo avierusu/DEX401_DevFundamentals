@@ -30,7 +30,7 @@
 		doc:name="Global Property"
 		doc:id="21207e3a-8dba-4d0e-946b-5adba9489e6a"
 		name="env"
-		value="DEV" />
+		value="TEST" />
 	
 	
 	<db:config
