@@ -1,0 +1,13 @@
+# This file contains properties and values to be used in the TEST environment
+
+# HTTP Listener Config values
+http:
+  hostName:               "0.0.0.0"
+  port:                   "8081"
+
+
+# MySQL Database properties
+db:
+  url:                  "jdbc:mysql://mudb.mule-training.com:3306/training?user=mule&password=mule"
+  # url: "jdbc:mysql://mudb.learn.mulesoft.com:3306/training?user=mule&password=mule"
+  driver:               "com.mysql.cj.jdbc.Driver"

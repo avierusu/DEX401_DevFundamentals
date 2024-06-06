@@ -1,0 +1,12 @@
+# This file contains properties and values to be used in the DEV environment
+
+# HTTP Listener Config values
+http:
+  hostName:               "localhost"
+  port:                   "7081"
+
+
+# Derby Database properties
+db:
+  url:                  "jdbc:derby://localhost:1527/memory:training"
+  driver:               "org.apache.derby.jdbc.ClientDriver"

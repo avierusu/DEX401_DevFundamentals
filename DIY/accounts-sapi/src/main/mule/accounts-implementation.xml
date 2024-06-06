@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="getAccounts" doc:id="1be01982-dd34-44a3-b7ab-58b1e2090852" >
+		<http:listener doc:name="Listener" doc:id="6e40f431-9083-42cb-90a5-9bfd85d98e4d" config-ref="httpListenerConnectorConfig" path="/accounts"/>
+		<db:select doc:name="Select" doc:id="fb3d2cf5-d9d7-4358-bb4b-4f72700e8a8b" config-ref="accountsGenericDatabase">
+			<db:sql ><![CDATA[SELECT *
+  FROM flights_customers]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="7edba654-6024-4186-9aac-4dd0177c506e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	id: payload01.accountID as Number default 0,
+	name: payload01.name default "",
+	"type": payload01.accountType default "",
+	address: "\"" ++
+	         payload01.street as String ++ ", " ++
+	         payload01.city as String ++ ", " ++
+	         payload01.state as String ++ ", " ++
+	         payload01.postal as String ++ ", " ++
+	         payload01.country as String ++ ", " ++
+	         "\'",
+	airMiles: payload01.miles default 0,
+	creationDate: payload01.creationDate default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="dd9ab68d-7fae-400c-9810-e5e75a8452dd" message="#[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="be709e62-bdc3-4278-ad6e-081d86d3de0d" message='#["number of rows returned: $(sizeOf(payload))"]'/>
+	</flow>
+	<flow name="accounts-implementationFlow" doc:id="d3081efb-d9fd-4451-a04a-dc7f0353f01e" >
+		<http:listener doc:name="Listener" doc:id="6d6191f4-b6bf-416e-8a70-49b60c65dce8" config-ref="httpListenerConnectorConfig" path="/count"/>
+		<db:select doc:name="Select" doc:id="d0bf9cb2-69e4-410c-a1b1-242fc4311dcd" config-ref="accountsGenericDatabase">
+			<db:sql ><![CDATA[SELECT COUNT(*) FROM flights_customers]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="96405c8f-9650-4173-a5a6-25a292e9ca23" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload[0]."COUNT(*)"]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="c9fde70c-e7f3-4945-80fb-31c36640da1e" message='#["number of rows returned: $(payload)"]'/>
+	</flow>
+</mule>
