@@ -49,4 +49,5 @@ velocity.log
 
 
 .tooling/
+.tooling-apps-cache/
 weave/

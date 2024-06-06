@@ -16,10 +16,14 @@
 	
 	
 	<flow name="getFlights" doc:id="b59dc460-d3c1-4d95-923c-508be988d336" >
-		<http:listener doc:name="Listener" doc:id="91b6bc13-12c0-4a30-89dd-d6427f789f6e" config-ref="httpListenerConnectorConfig" path="/flights" allowedMethods="GET"/>
 		<db:select doc:name="Select" doc:id="c294797a-3107-4e0c-8991-1873c263af56" config-ref="americanFlightsGenericDatabase">
 			<db:sql ><![CDATA[SELECT *
-  FROM american]]></db:sql>
+  FROM american
+  WHERE :destinationCity IS NULL
+  OR toAirport = :destinationCity]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	destinationCity: message.attributes.queryParams.destination
+}]]]></db:input-parameters>
 		</db:select>
 		<ee:transform doc:name="Transform Message" doc:id="1c85e31b-ccb8-49e3-9c63-1ef90f302d99" >
 			<ee:message >
@@ -34,7 +38,6 @@ payload]]></ee:set-payload>
 	
 	
 	<flow name="getFlightById" doc:id="557c0f30-dcab-42de-ab9b-7cfbaac092d3" >
-		<http:listener doc:name="Listener" doc:id="b2cc791f-8dab-4f5a-81b4-276228ef0e20" config-ref="httpListenerConnectorConfig" path="/flights/{ID}" allowedMethods="GET"/>
 		<db:select doc:name="Select" doc:id="7ea49d20-f694-4767-ab19-4769fcc88ab4" config-ref="americanFlightsGenericDatabase">
 			<db:sql ><![CDATA[SELECT *
   FROM american
@@ -57,7 +60,6 @@ payload[0]]]></ee:set-payload>
 	
 	
 	<flow name="addFlight" doc:id="39196b68-f124-4fca-bd80-57333094a808" >
-		<http:listener doc:name="Listener" doc:id="8b4b9f77-d551-4f6a-9768-9c994fa5761b" config-ref="httpListenerConnectorConfig" path="/flights" allowedMethods="POST"/>
 		<ee:transform doc:name="Transform Message" doc:id="c6594a9c-a2d4-414b-b2f3-8dc6e71be9ba" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
