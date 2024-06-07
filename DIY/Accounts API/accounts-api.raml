@@ -53,3 +53,30 @@ types:
             type: object
             example:
               message: Accounts created
+
+/accounts/{ID}:
+  get:
+    displayName: Get Account by ID
+    description: Retrieve a single account corresponding to the requested ID number
+    headers:
+      userID:
+        description: The person or system requesting the data
+        type: string
+    responses:
+      200:
+        body:
+          application/json:
+            type: Account
+            examples:
+              !include /examples/AccountNoIdExample.raml
+      404:
+        body:
+          application/json:
+            type: object
+            example:
+              {"message": "Account not found"}
+  uriParameters:
+    ID:
+      description: Unique idenfifier that corresponds to a single account
+      type: number
+      format: int
