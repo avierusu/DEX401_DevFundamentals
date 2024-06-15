@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <apikit:config name="american-flights-api-config" api="resource::928823c8-6dd4-4b10-a7d7-91a8da736281:american-flights-api:1.0.1:raml:zip:american-flights-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="american-flights-api-config" api="resource::928823c8-6dd4-4b10-a7d7-91a8da736281:american-flights-api:1.0.3:raml:zip:american-flights-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="american-flights-api-main">
         <http:listener config-ref="httpListenerConnectorConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -121,12 +121,12 @@ output application/json
         </error-handler>
     </flow>
     <flow name="get:\flights:american-flights-api-config">
-		<flow-ref doc:name="getFlights" doc:id="bd4a3a71-9bd1-40bf-8ba8-39ec05a5fad2" name="getFlights"/>
+        <flow-ref doc:name="getFlights" doc:id="bd4a3a71-9bd1-40bf-8ba8-39ec05a5fad2" name="getFlights" />
     </flow>
     <flow name="get:\flights\(ID):american-flights-api-config">
-		<flow-ref doc:name="getFlightById" doc:id="35b7dc4c-a2d4-47af-b4d4-204c9db898c7" name="getFlightById"/>
+        <flow-ref doc:name="getFlightById" doc:id="35b7dc4c-a2d4-47af-b4d4-204c9db898c7" name="getFlightById" />
     </flow>
     <flow name="post:\flights:application\json:american-flights-api-config">
-		<flow-ref doc:name="addFlight" doc:id="50af0a33-8832-43ca-8350-a51523238b3a" name="addFlight"/>
+        <flow-ref doc:name="addFlight" doc:id="50af0a33-8832-43ca-8350-a51523238b3a" name="addFlight" />
     </flow>
 </mule>

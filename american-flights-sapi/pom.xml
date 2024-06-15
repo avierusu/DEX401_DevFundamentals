@@ -18,7 +18,7 @@
 		<!-- Update these values whenever my Anypoint Platform account changes -->
 		<american.flights.spec.group.id>928823c8-6dd4-4b10-a7d7-91a8da736281</american.flights.spec.group.id>
 		<american.flights.spec.artifact.id>american-flights-api</american.flights.spec.artifact.id>
-		<american.flights.spec.version>1.0.1</american.flights.spec.version>
+		<american.flights.spec.version>1.0.3</american.flights.spec.version>
 	</properties>
 
 	<build>
