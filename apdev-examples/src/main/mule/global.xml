@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule
+xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+		xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
 	xmlns:db="http://www.mulesoft.org/schema/mule/db"
 	xmlns:http="http://www.mulesoft.org/schema/mule/http"
 	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd 
 	http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 	http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-	http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
 
 
 	<http:listener-config
@@ -20,11 +23,11 @@
 			host="${http.hostName}"
 			port="${http.port}" />
 	</http:listener-config>
+	
 	<configuration-properties
 		doc:name="Configuration properties"
 		doc:id="785c6786-1315-4987-a20d-8e26f555aac8"
 		file="config-${env}.yaml" />
-
 
 	<global-property
 		doc:name="Global Property"
@@ -32,6 +35,25 @@
 		name="env"
 		value="TEST" />
 
-
+	<http:request-config
+		name="HTTP_Request_configuration"
+		doc:name="HTTP Request configuration"
+		doc:id="6687ffd2-4711-43ed-a5d8-9fcd35be057e" >
+		<http:request-connection
+			host="localhost"
+			port="8081" />
+	</http:request-config>
+	<vm:config
+		name="VM_Config"
+		doc:name="VM Config"
+		doc:id="aac4a9ee-d21c-4337-8123-387442a6aa93" >
+		<vm:queues >
+			<vm:queue
+				queueName="goodbye" />
+		</vm:queues>
+	</vm:config>
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="4edcad64-2771-4773-a329-5b823df11dc2" >
+		<salesforce:basic-connection username="${salesforce.username}" password="${salesforce.password}" securityToken="${salesforce.securityToken}" />
+	</salesforce:sfdc-config>
 
 </mule>
