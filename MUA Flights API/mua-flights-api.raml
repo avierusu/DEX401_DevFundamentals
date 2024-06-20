@@ -1,0 +1,56 @@
+#%RAML 1.0
+title: MUA Flights API
+version: v1
+description: |
+  This specification defines a Process API that interacts with other existing System APIs, provided by American Airlines, United Airlines, and Delta Airlines, and produces a common format that is depicted in the sample json file when a GET request is issued.
+
+types: 
+  Flight: !include datatypes/Flight.raml
+
+/flights:
+  get:
+    displayName: Get flights
+    queryParameters:
+      code:
+        displayName: Code
+        description: Destination airport code
+        type: string
+        required: false
+        pattern: ^[A-Z]{3}$
+        enum: 
+          - ALL
+          - SFO
+          - LAX
+          - PDX
+          - CLE
+          - PDF
+      airline:
+        displayName: Airline
+        description: Airline offering the flight
+        type: string
+        required: false
+        enum: 
+          - all
+          - united
+          - delta
+          - american
+    responses:
+      200:
+        body:
+          application/json:
+            type: Flight[]
+            examples:
+              output: !include examples/FlightsExample.raml
+
+  post:
+    body: 
+      application/json:
+        type: Flight
+        examples:
+          input: !include examples/FlightNoIDExample.raml
+    responses: 
+      201:
+        body: 
+          application/json:
+            example:
+              message: Flight added (but not really)
