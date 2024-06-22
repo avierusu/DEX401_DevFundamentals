@@ -31,5 +31,75 @@ type flight_json = {|
     <types:type name="Flight_pojo" format="java">
       <types:shape format="java" element="com.mulesoft.training.Flight"/>
     </types:type>
+    <types:type name="american_flights_json" format="json">
+      <types:shape format="weave" example="examples/american-flights-example.json"><![CDATA[%dw 2.0
+
+type american_flights_json = Array<{|  ID: Number {"typeId": "int"},   code1: String,   code2: String,   airlineName: String,   toAirport: String,   fromAirport: String,   takeOffDate: String,   price: Number {"typeId": "int"},   planeType: String,   seatsAvailable: Number {"typeId": "int"},   totalSeats: Number {"typeId": "int"}|}> {"example": "[{\\\"ID\\\":1,\\\"code1\\\":\\\"rree\\\",\\\"code2\\\":\\\"0001\\\",\\\"airlineName\\\":\\\"American Airlines\\\",\\\"toAirport\\\":\\\"LAX\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"takeOffDate\\\":\\\"2016-01-20\\\",\\\"price\\\":541,\\\"planeType\\\":\\\"Boeing 787\\\",\\\"seatsAvailable\\\":0,\\\"totalSeats\\\":200},{\\\"ID\\\":2,\\\"code1\\\":\\\"eefd\\\",\\\"code2\\\":\\\"0123\\\",\\\"airlineName\\\":\\\"American Airlines\\\",\\\"toAirport\\\":\\\"CLE\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"takeOffDate\\\":\\\"2016-01-25\\\",\\\"price\\\":300,\\\"planeType\\\":\\\"Boeing 747\\\",\\\"seatsAvailable\\\":7,\\\"totalSeats\\\":345},{\\\"ID\\\":3,\\\"code1\\\":\\\"ffee\\\",\\\"code2\\\":\\\"0192\\\",\\\"airlineName\\\":\\\"American Airlines\\\",\\\"toAirport\\\":\\\"LAX\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"takeOffDate\\\":\\\"2016-01-20\\\",\\\"price\\\":300,\\\"planeType\\\":\\\"Boeing 777\\\",\\\"seatsAvailable\\\":0,\\\"totalSeats\\\":300},{\\\"ID\\\":4,\\\"code1\\\":\\\"rree\\\",\\\"code2\\\":\\\"1000\\\",\\\"airlineName\\\":\\\"American Airlines\\\",\\\"toAirport\\\":\\\"CLE\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"takeOffDate\\\":\\\"2016-01-20\\\",\\\"price\\\":200,\\\"planeType\\\":\\\"Boeing 737\\\",\\\"seatsAvailable\\\":5,\\\"totalSeats\\\":150},{\\\"ID\\\":5,\\\"code1\\\":\\\"rree\\\",\\\"code2\\\":\\\"1093\\\",\\\"airlineName\\\":\\\"American Airlines\\\",\\\"toAirport\\\":\\\"SFO\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"takeOffDate\\\":\\\"2016-02-11\\\",\\\"price\\\":142,\\\"planeType\\\":\\\"Boeing 737\\\",\\\"seatsAvailable\\\":1,\\\"totalSeats\\\":150},{\\\"ID\\\":6,\\\"code1\\\":\\\"ffee\\\",\\\"code2\\\":\\\"1112\\\",\\\"airlineName\\\":\\\"American Airlines\\\",\\\"toAirport\\\":\\\"CLE\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"takeOffDate\\\":\\\"2016-01-20\\\",\\\"price\\\":954,\\\"planeType\\\":\\\"Boeing 787\\\",\\\"seatsAvailable\\\":100,\\\"totalSeats\\\":200},{\\\"ID\\\":7,\\\"code1\\\":\\\"eefd\\\",\\\"code2\\\":\\\"1994\\\",\\\"airlineName\\\":\\\"American Airlines\\\",\\\"toAirport\\\":\\\"SFO\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"takeOffDate\\\":\\\"2016-01-01\\\",\\\"price\\\":676,\\\"planeType\\\":\\\"Boeing 777\\\",\\\"seatsAvailable\\\":0,\\\"totalSeats\\\":300},{\\\"ID\\\":8,\\\"code1\\\":\\\"ffee\\\",\\\"code2\\\":\\\"2000\\\",\\\"airlineName\\\":\\\"American Airlines\\\",\\\"toAirport\\\":\\\"SFO\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"takeOffDate\\\":\\\"2016-02-20\\\",\\\"price\\\":300,\\\"planeType\\\":\\\"Boeing 737\\\",\\\"seatsAvailable\\\":30,\\\"totalSeats\\\":150},{\\\"ID\\\":9,\\\"code1\\\":\\\"eefd\\\",\\\"code2\\\":\\\"3000\\\",\\\"airlineName\\\":\\\"American Airlines\\\",\\\"toAirport\\\":\\\"SFO\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"takeOffDate\\\":\\\"2016-02-01\\\",\\\"price\\\":900,\\\"planeType\\\":\\\"Boeing 737\\\",\\\"seatsAvailable\\\":0,\\\"totalSeats\\\":150},{\\\"ID\\\":10,\\\"code1\\\":\\\"eefd\\\",\\\"code2\\\":\\\"4511\\\",\\\"airlineName\\\":\\\"American Airlines\\\",\\\"toAirport\\\":\\\"LAX\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"takeOffDate\\\":\\\"2016-01-15\\\",\\\"price\\\":900,\\\"planeType\\\":\\\"Boeing 777\\\",\\\"seatsAvailable\\\":100,\\\"totalSeats\\\":300},{\\\"ID\\\":11,\\\"code1\\\":\\\"rree\\\",\\\"code2\\\":\\\"4567\\\",\\\"airlineName\\\":\\\"American Airlines\\\",\\\"toAirport\\\":\\\"SFO\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"takeOffDate\\\":\\\"2016-01-20\\\",\\\"price\\\":456,\\\"planeType\\\":\\\"Boeing 737\\\",\\\"seatsAvailable\\\":100,\\\"totalSeats\\\":150}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="united_flights_json" format="json">
+      <types:shape format="weave" example="examples/united-flights-example.json"><![CDATA[%dw 2.0
+
+type united_flights_json = {|
+  flights: Array<{|    airlineName: String,     price: Number {"typeId": "double"},     departureDate: String,     planeType: String,     origin: String,     code: String,     emptySeats: Number {"typeId": "int"},     destination: String  |}>
+|} {"example": "{\\\"flights\\\":[{\\\"airlineName\\\":\\\"United\\\",\\\"price\\\":400.00,\\\"departureDate\\\":\\\"2015\\/03\\/20\\\",\\\"planeType\\\":\\\"Boeing 737\\\",\\\"origin\\\":\\\"MUA\\\",\\\"code\\\":\\\"ER38sd\\\",\\\"emptySeats\\\":0,\\\"destination\\\":\\\"SFO\\\"},{\\\"airlineName\\\":\\\"United\\\",\\\"price\\\":345.99,\\\"departureDate\\\":\\\"2015\\/02\\/11\\\",\\\"planeType\\\":\\\"Boeing 737\\\",\\\"origin\\\":\\\"MUA\\\",\\\"code\\\":\\\"ER45if\\\",\\\"emptySeats\\\":52,\\\"destination\\\":\\\"LAX\\\"},{\\\"airlineName\\\":\\\"United\\\",\\\"price\\\":346.00,\\\"departureDate\\\":\\\"2015\\/04\\/11\\\",\\\"planeType\\\":\\\"Boeing 777\\\",\\\"origin\\\":\\\"MUA\\\",\\\"code\\\":\\\"ER45jd\\\",\\\"emptySeats\\\":12,\\\"destination\\\":\\\"LAX\\\"},{\\\"airlineName\\\":\\\"United\\\",\\\"price\\\":423.00,\\\"departureDate\\\":\\\"2015\\/06\\/11\\\",\\\"planeType\\\":\\\"Boeing 707\\\",\\\"origin\\\":\\\"MUA\\\",\\\"code\\\":\\\"ER0945\\\",\\\"emptySeats\\\":0,\\\"destination\\\":\\\"LAX\\\"},{\\\"airlineName\\\":\\\"United\\\",\\\"price\\\":845.00,\\\"departureDate\\\":\\\"2015\\/07\\/11\\\",\\\"planeType\\\":\\\"Boeing 727\\\",\\\"origin\\\":\\\"MUA\\\",\\\"code\\\":\\\"ER9fje\\\",\\\"emptySeats\\\":32,\\\"destination\\\":\\\"CLE\\\"},{\\\"airlineName\\\":\\\"United\\\",\\\"price\\\":245.00,\\\"departureDate\\\":\\\"2015\\/08\\/11\\\",\\\"planeType\\\":\\\"Boeing 747\\\",\\\"origin\\\":\\\"MUA\\\",\\\"code\\\":\\\"ER3kfd\\\",\\\"emptySeats\\\":13,\\\"destination\\\":\\\"CLE\\\"},{\\\"airlineName\\\":\\\"United\\\",\\\"price\\\":945.00,\\\"departureDate\\\":\\\"2015\\/09\\/11\\\",\\\"planeType\\\":\\\"Boeing 757\\\",\\\"origin\\\":\\\"MUA\\\",\\\"code\\\":\\\"ER39rk\\\",\\\"emptySeats\\\":54,\\\"destination\\\":\\\"SFO\\\"},{\\\"airlineName\\\":\\\"United\\\",\\\"price\\\":954.00,\\\"departureDate\\\":\\\"2015\\/02\\/12\\\",\\\"planeType\\\":\\\"Boeing 777\\\",\\\"origin\\\":\\\"MUA\\\",\\\"code\\\":\\\"ER39rj\\\",\\\"emptySeats\\\":23,\\\"destination\\\":\\\"SFO\\\"},{\\\"airlineName\\\":\\\"United\\\",\\\"price\\\":234.00,\\\"departureDate\\\":\\\"2015\\/02\\/12\\\",\\\"planeType\\\":\\\"Boeing 787\\\",\\\"origin\\\":\\\"MUA\\\",\\\"code\\\":\\\"ER95jf\\\",\\\"emptySeats\\\":23,\\\"destination\\\":\\\"PDF\\\"},{\\\"airlineName\\\":\\\"United\\\",\\\"price\\\":853.00,\\\"departureDate\\\":\\\"2015\\/02\\/13\\\",\\\"planeType\\\":\\\"Boeing 777\\\",\\\"origin\\\":\\\"MUA\\\",\\\"code\\\":\\\"ER49fd\\\",\\\"emptySeats\\\":0,\\\"destination\\\":\\\"PDX\\\"},{\\\"airlineName\\\":\\\"United\\\",\\\"price\\\":483.00,\\\"departureDate\\\":\\\"2015\\/02\\/20\\\",\\\"planeType\\\":\\\"Boeing 777\\\",\\\"origin\\\":\\\"MUA\\\",\\\"code\\\":\\\"ER95jf\\\",\\\"emptySeats\\\":95,\\\"destination\\\":\\\"PDX\\\"},{\\\"airlineName\\\":\\\"United\\\",\\\"price\\\":532.00,\\\"departureDate\\\":\\\"2015\\/02\\/12\\\",\\\"planeType\\\":\\\"Boeing 777\\\",\\\"origin\\\":\\\"MUA\\\",\\\"code\\\":\\\"ER04kf\\\",\\\"emptySeats\\\":30,\\\"destination\\\":\\\"PDX\\\"}]}"}
+
+]]></types:shape>
+    </types:type>
   </types:catalog>
+  <types:enrichment select="#73ee8606-9250-4507-8af0-16e8797f6caa">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="flights_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#7d9c9ed2-b21f-4cbd-b1ac-0fb7960fea43">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="united_flights_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#f22093e3-ecab-48cb-ad53-c93513b7f257">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="american_flights_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#a16d689e-f466-421f-9e42-266e7ef56b94">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="flights_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#655cb9eb-f55e-4711-99db-09999d515daf">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="flights_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#d01d1a3e-98d5-4e09-a040-bc9faf6f2151">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="flights_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
 </types:mule>

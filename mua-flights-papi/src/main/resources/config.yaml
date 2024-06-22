@@ -1,10 +1,25 @@
+# Properties for HTTP Listener configuration
 http:
   hostName:        "0.0.0.0"
   port:            "8081"
 
 
+# Properties for American flights connector configuration
 american:
-  host:            "proxy-avier-american-flights-sapi.us-e2.cloudhub.io"
+  hostName:        "proxy-avier-american-flights-sapi.us-e2.cloudhub.io"
   port:            "80"
   basePath:        "/"
   protocol:        "HTTP"
+
+# Properties for HTTP Request configuration for United flights
+united:
+  hostName:        "mu.mule-training.com"
+  port:            "80"
+  basePath:        "/"
+  protocol:        "HTTP"
+
+# Properties for Delta Web service
+delta:
+  wsdl:            "http://mu.mule-training.com/delta?wsdl"
+  service:         "TicketServiceService"
+  port:            "DeltaFlightsServiceImplPort"
