@@ -16,9 +16,9 @@
 		<app.runtime>4.7.0</app.runtime>
 		<mule.maven.plugin.version>4.2.0</mule.maven.plugin.version>
 		<!-- Update these values whenever my Anypoint Platform account changes -->
-		<american.flights.spec.group.id>928823c8-6dd4-4b10-a7d7-91a8da736281</american.flights.spec.group.id>
+		<american.flights.spec.group.id>bef24a02-1caf-44ed-bf46-438159d0b29a</american.flights.spec.group.id>
 		<american.flights.spec.artifact.id>american-flights-api</american.flights.spec.artifact.id>
-		<american.flights.spec.version>1.0.4</american.flights.spec.version>
+		<american.flights.spec.version>1.0.0</american.flights.spec.version>
 	</properties>
 
 	<build>

@@ -59,7 +59,7 @@ flatten(payload..payload)]]></ee:set-payload>
 		</ee:transform>
 	</flow>
 	<flow name="getAmericanFlights" doc:id="94eb51fc-b281-4448-ac6d-55277a94c52a">
-		<american-flights-api:get-flights doc:name="Get Flights" doc:id="f22093e3-ecab-48cb-ad53-c93513b7f257" config-ref="American_Flights_API_Config" client-id="${secure::american.clientId}" client-secret="${secure::american.clientSecret}" destination='#[if(vars.code == "ALL") null else vars.code]' />
+		<american-flights-api:get-flights doc:name="Get Flights" doc:id="f22093e3-ecab-48cb-ad53-c93513b7f257" client-id="${secure::american.clientId}" client-secret="${secure::american.clientSecret}" destination='#[if(vars.code == "ALL") null else vars.code]' config-ref="American_Flights_API_Config"/>
 		<ee:transform doc:name="Transform Message" doc:id="73ee8606-9250-4507-8af0-16e8797f6caa">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0

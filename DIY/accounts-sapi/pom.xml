@@ -81,9 +81,9 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>928823c8-6dd4-4b10-a7d7-91a8da736281</groupId>
+			<groupId>bef24a02-1caf-44ed-bf46-438159d0b29a</groupId>
 			<artifactId>accounts-api</artifactId>
-			<version>1.0.6</version>
+			<version>1.0.0</version>
 			<classifier>raml</classifier>
 			<type>zip</type>
 		</dependency>

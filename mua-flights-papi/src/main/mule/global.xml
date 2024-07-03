@@ -11,7 +11,6 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="790c9ff3-487b-49e0-b0b3-30ccd58685e9" >
 		<http:listener-connection host="${http.hostName}" port="${http.port}" />
 	</http:listener-config>
-	<american-flights-api:config name="American_Flights_API_Config" doc:name="American Flights API Config" doc:id="739e1158-df65-4f56-8c2e-92187571ddad" property_host="${american.hostName}" property_port="${american.port}" property_basePath="${american.basePath}" property_protocol="${american.protocol}" />
 	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="d527422c-72cf-4a99-9564-b936783b6414" file="config-secure.yaml" key="${encrypt.key}" >
 		<secure-properties:encrypt algorithm="Blowfish" />
 	</secure-properties:config>
@@ -23,4 +22,5 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
 		</wsc:connection>
 	</wsc:config>
+	<american-flights-api:config name="American_Flights_API_Config" doc:name="American Flights API Config" doc:id="c5990fdb-1ad3-4ef9-92ca-eceef34f8902" property_host="${american.hostName}" property_port="${american.port}" property_basePath="${american.basePath}" property_protocol="${american.protocol}"/>
 </mule>
