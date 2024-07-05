@@ -1,0 +1,11 @@
+# Properties for HTTP Listener configuration
+http:
+  hostName:        "0.0.0.0"
+  port:            "8081"
+
+# Properties for HTTP Request configuration for Accounts
+accounts:
+  hostName:        "proxy-avier-accounts-sapi.us-e2.cloudhub.io"
+  port:            "80"
+  basePath:        "/"
+  protocol:        "HTTP"

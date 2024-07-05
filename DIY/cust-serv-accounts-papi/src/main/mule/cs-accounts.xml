@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="getAllAccounts" doc:id="7ef9e385-7309-476d-b45d-1f46f4218a6f" >
+		<http:listener doc:name="GET /accounts" doc:id="9d84210c-af0f-4cdf-acf7-f3697155183c" config-ref="HTTP_Listener_config" path="/accounts" allowedMethods="GET"/>
+		<flow-ref doc:name="setUserID" doc:id="de144610-c744-4023-bec3-635d1323a99d" name="setUserID"/>
+		<http:request method="GET" doc:name="Invoke Accounts API" doc:id="a2ede0fe-a433-4de4-aeae-3b37fdf0fa95" config-ref="HTTP_Request_configuration" path="/accounts">
+			<http:headers ><![CDATA[#[{
+	"userID": vars.userID,
+	"client_id": "${secure::accounts.clientId}",
+	"client_secret": "${secure::accounts.clientSecret}"
+}]]]></http:headers>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="8f3e6ebe-cb6b-4c7b-aac0-6a52813092f9" message="#[payload]"/>
+	</flow>
+	<flow name="getAccountsByName" doc:id="bdfb60ca-92c0-4548-8b4d-38a6b8e6de94">
+		<http:listener doc:name="GET /accounts-by-name" doc:id="82f386e1-3ed6-472a-9836-bcceb4697c81" config-ref="HTTP_Listener_config" path="/accounts-by-name" allowedMethods="GET" />
+		<flow-ref doc:name="setUserID" doc:id="0f682d42-e9b4-4aeb-b3b0-1248afcc087d" name="setUserID" />
+		<set-variable value="#[message.attributes.queryParams.name]" doc:name="accountName" doc:id="82a1a06f-1e8b-4583-ad1c-5bc954a8f81e" variableName="accountName" />
+		<http:request method="GET" doc:name="Invoke Accounts API" doc:id="e336c366-2d53-4126-91bd-a4f0b742bae5" config-ref="HTTP_Request_configuration" path="/accounts">
+			<http:headers><![CDATA[#[{
+	"userID": vars.userID,
+	"client_id": "${secure::accounts.clientId}",
+	"client_secret": "${secure::accounts.clientSecret}"
+}]]]></http:headers>
+			<http:query-params><![CDATA[#[{
+	account_name: vars.accountName
+}]]]></http:query-params>
+		</http:request>
+		<set-payload value='#["Retrieved " ++ sizeOf(payload) ++ " accounts\n" ++ payload]' doc:name="Set Payload" doc:id="ed69cffe-1f30-4a90-8509-ad284288bb3b" />
+		<logger level="INFO" doc:name="Logger" doc:id="414869dd-3b9a-4139-bba6-9aeeba0653b2" message="#[payload]"/>
+	</flow>
+	<sub-flow name="setUserID" doc:id="006f3e39-1f37-4ae2-8572-d90a868f6f95" >
+		<set-variable value="#[message.attributes.header.user_id]" doc:name="userID" doc:id="52ec9534-5cfd-4728-90d4-575c539559f8" variableName="userID"/>
+	</sub-flow>
+</mule>
