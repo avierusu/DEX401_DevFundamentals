@@ -18,6 +18,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	</flow>
 	<flow name="getAccountsByName" doc:id="bdfb60ca-92c0-4548-8b4d-38a6b8e6de94">
 		<http:listener doc:name="GET /accounts-by-name" doc:id="82f386e1-3ed6-472a-9836-bcceb4697c81" config-ref="HTTP_Listener_config" path="/accounts-by-name" allowedMethods="GET" />
+		<logger level="INFO" doc:name="Log Mule Message" doc:id="ab40072b-dd90-43a8-9826-75a2ee09621f" />
 		<flow-ref doc:name="setUserID" doc:id="0f682d42-e9b4-4aeb-b3b0-1248afcc087d" name="setUserID" />
 		<set-variable value="#[message.attributes.queryParams.name]" doc:name="accountName" doc:id="82a1a06f-1e8b-4583-ad1c-5bc954a8f81e" variableName="accountName" />
 		<http:request method="GET" doc:name="Invoke Accounts API" doc:id="e336c366-2d53-4126-91bd-a4f0b742bae5" config-ref="HTTP_Request_configuration" path="/accounts">
@@ -30,10 +31,28 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	account_name: vars.accountName
 }]]]></http:query-params>
 		</http:request>
-		<set-payload value='#["Retrieved " ++ sizeOf(payload) ++ " accounts\n" ++ payload]' doc:name="Set Payload" doc:id="ed69cffe-1f30-4a90-8509-ad284288bb3b" />
-		<logger level="INFO" doc:name="Logger" doc:id="414869dd-3b9a-4139-bba6-9aeeba0653b2" message="#[payload]"/>
+		<set-payload value='#[output application/json&#10;---&#10;{&#10;	numAccounts: sizeOf(payload),&#10;	userId: vars.userID,&#10;	custAccountName: vars.accountName,&#10;	accounts: payload&#10;}]' doc:name="Set Payload" doc:id="ed69cffe-1f30-4a90-8509-ad284288bb3b" />
+		<logger level="INFO" doc:name="Log Mule Message" doc:id="414869dd-3b9a-4139-bba6-9aeeba0653b2"/>
+	</flow>
+	<flow name="getAccountsByType" doc:id="4daddc28-abef-4bbe-8d2b-dbbd0bf547e0">
+		<http:listener doc:name="GET /accounts-by-type" doc:id="8fdbd322-cd6b-4e8f-a2f0-ec82ac4a2e0e" config-ref="HTTP_Listener_config" path="/accounts-by-type" allowedMethods="GET" />
+		<logger level="INFO" doc:name="Log Mule Message" doc:id="dbab41f6-f4a2-4401-a1b9-b4edeb99155e" />
+		<flow-ref doc:name="setUserID" doc:id="de1d59f3-0377-4dbe-9e80-53c5a7916897" name="setUserID" />
+		<set-variable value='#[message.attributes.queryParams.accType default "business"]' doc:name="accountType" doc:id="571cbc00-43fe-453d-b9e3-3cc0c52ab0c1" variableName="accountType" />
+		<http:request method="GET" doc:name="Invoke Accounts API" doc:id="a8863ff1-61b3-4682-8536-23926e90d2b8" config-ref="HTTP_Request_configuration" path="/accounts" >
+			<http:headers ><![CDATA[#[{
+	"userID": vars.userID,
+	"client_id": "${secure::accounts.clientId}",
+	"client_secret": "${secure::accounts.clientSecret}"
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[{
+	account_type: vars.accountType
+}]]]></http:query-params>
+		</http:request>
+		<set-payload value="#[output application/json&#10;---&#10;{&#10;	numAccounts: sizeOf(payload),&#10;	userId: vars.userID,&#10;	custAccountType: vars.accountType,&#10;	accounts: payload&#10;}]" doc:name="Set Payload" doc:id="62dbb946-0851-47fc-a6b5-d003126b9ea5" />
+		<logger level="INFO" doc:name="Log Mule Message" doc:id="b3e73c15-9f35-43dd-a9f7-7e6ba603dc85" />
 	</flow>
 	<sub-flow name="setUserID" doc:id="006f3e39-1f37-4ae2-8572-d90a868f6f95" >
-		<set-variable value="#[message.attributes.header.user_id]" doc:name="userID" doc:id="52ec9534-5cfd-4728-90d4-575c539559f8" variableName="userID"/>
+		<set-variable value="#[message.attributes.headers.user_id]" doc:name="userID" doc:id="52ec9534-5cfd-4728-90d4-575c539559f8" variableName="userID"/>
 	</sub-flow>
 </mule>
