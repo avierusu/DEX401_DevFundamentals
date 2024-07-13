@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:accounts-api="http://www.mulesoft.org/schema/mule/accounts-api" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
-	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:accounts-api="http://www.mulesoft.org/schema/mule/accounts-api"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
-http://www.mulesoft.org/schema/mule/accounts-api http://www.mulesoft.org/schema/mule/accounts-api/current/mule-accounts-api.xsd">
+http://www.mulesoft.org/schema/mule/accounts-api http://www.mulesoft.org/schema/mule/accounts-api/current/mule-accounts-api.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
 	<configuration-properties doc:name="Configuration properties" doc:id="b50302a5-3420-4f3c-8895-c9422aba0aab" file="config.yaml" />
 	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="0122789b-4ae0-49d7-8455-b9097597c7f0" file="config-secure.yaml" key="${encrypt.key}" >
 		<secure-properties:encrypt algorithm="Blowfish" />
@@ -20,4 +21,9 @@ http://www.mulesoft.org/schema/mule/accounts-api http://www.mulesoft.org/schema/
 		</vm:queues>
 	</vm:config>
 	<accounts-api:config name="Accounts_API_Config" doc:name="Accounts API Config" doc:id="88783bc7-527f-4e81-83ac-cc95cfa59cd1" property_host="${accounts.hostName}" property_port="${accounts.port}" property_basePath="${accounts.basePath}" property_protocol="${accounts.protocol}" />
+	<wsc:config name="Transactions_Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="4961e2b3-562f-42f5-b4a9-ada5d931ebe7" >
+		<wsc:connection wsdlLocation="${transactions.wsdl}" service="${transactions.service}" port="${transactions.port}" address="${transactions.address}" >
+			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
+		</wsc:connection>
+	</wsc:config>
 </mule>

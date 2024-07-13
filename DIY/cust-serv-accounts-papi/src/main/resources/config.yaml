@@ -9,3 +9,10 @@ accounts:
   port:            "80"
   basePath:        "/"
   protocol:        "HTTP"
+
+# Properties for Transaction Web service configuration
+transactions:
+  wsdl:             "http://mu.mule-training.com/transactions?wsdl"
+  service:          "TransactionsServiceService"
+  port:             "TransactionsServiceImplPort"
+  address:          "http://mu.mule-training.com/transactions"

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
+	<flow name="getTransactions" doc:id="0df9622b-036b-48ad-95fd-a0c8d6aa295d" >
+		<http:listener doc:name="GET /accounts/{ID}/transactions" doc:id="4e22b30d-4f1a-46f6-9cbc-0dc0539eb227" config-ref="HTTP_Listener_config" path="/accounts/{ID}/transactions" allowedMethods="GET">
+			<http:response >
+				<http:headers ><![CDATA[#[{
+	numberOfTransactions: sizeOf(payload..*transaction default []),
+	accountID: vars.accountID,
+	csUserID: vars.userID
+}]]]></http:headers>
+			</http:response>
+		</http:listener>
+		<set-variable value="#[message.attributes.headers.user_id]" doc:name="userID" doc:id="61cee85e-df0b-495c-81a2-119a0d76bd91" variableName="userID" />
+		<set-variable value="#[message.attributes.uriParams.ID]" doc:name="accountID" doc:id="dbdc4f89-8207-499e-823e-28e3dbe6737c" variableName="accountID"/>
+		<ee:transform doc:name="Pass Account ID" doc:id="8b291331-66c6-465e-83fe-8ce95785cbfa">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://training.mulesoft.com/
+---
+{
+	ns0#GetTransactionsforCustomers: {
+		customerID: vars.accountID as String
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="GetTransactionsforCustomers" doc:name="Txs SOAP GetTransactionsforCustomers" doc:id="9e4db13b-f525-4cf6-9b85-a4af45f900ef" config-ref="Transactions_Web_Service_Consumer_Config" />
+		<ee:transform doc:name="Transform Message" doc:id="d8974eac-ecc7-4a57-b72a-8f81f7261598" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+payload.body]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

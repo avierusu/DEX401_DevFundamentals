@@ -19,15 +19,14 @@ http://www.mulesoft.org/schema/mule/accounts-api http://www.mulesoft.org/schema/
 				<http:headers ><![CDATA[#[{
 	numberOfAccounts: sizeOf(payload as Array),
 	accountName: vars.accountName,
-	csrUserID: vars.userID
+	csUserID: vars.userID
 }]]]></http:headers>
 			</http:response>
 		</http:listener>
-		<logger level="INFO" doc:name="Log Mule Message" doc:id="ab40072b-dd90-43a8-9826-75a2ee09621f" />
 		<flow-ref doc:name="setUserID" doc:id="0f682d42-e9b4-4aeb-b3b0-1248afcc087d" name="setUserID" />
 		<set-variable value="#[message.attributes.queryParams.name]" doc:name="accountName" doc:id="82a1a06f-1e8b-4583-ad1c-5bc954a8f81e" variableName="accountName" />
 		<accounts-api:get-accounts doc:name="Get Accounts" doc:id="2f2bee11-353c-4b0d-bb53-f38b0e36b648" config-ref="Accounts_API_Config" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}" account-name="#[vars.accountName]"/>
-		<logger level="INFO" doc:name="Log Mule Message" doc:id="414869dd-3b9a-4139-bba6-9aeeba0653b2"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c9f3cd21-cc1c-4241-b3dc-ca51a1297917" message="#[payload]" />
 	</flow>
 	<flow name="getAccountsByType" doc:id="4daddc28-abef-4bbe-8d2b-dbbd0bf547e0">
 		<http:listener doc:name="GET /accounts-by-type" doc:id="8fdbd322-cd6b-4e8f-a2f0-ec82ac4a2e0e" config-ref="HTTP_Listener_config" path="/accounts-by-type" allowedMethods="GET" >
@@ -39,11 +38,10 @@ http://www.mulesoft.org/schema/mule/accounts-api http://www.mulesoft.org/schema/
 }]]]></http:headers>
 			</http:response>
 		</http:listener>
-		<logger level="INFO" doc:name="Log Mule Message" doc:id="dbab41f6-f4a2-4401-a1b9-b4edeb99155e" />
 		<flow-ref doc:name="setUserID" doc:id="de1d59f3-0377-4dbe-9e80-53c5a7916897" name="setUserID" />
 		<set-variable value='#[message.attributes.queryParams.accType default "business"]' doc:name="accountType" doc:id="571cbc00-43fe-453d-b9e3-3cc0c52ab0c1" variableName="accountType" />
 		<accounts-api:get-accounts doc:name="Get Accounts" doc:id="00e150ea-cc47-4cbc-93c5-ddbef31c011b" config-ref="Accounts_API_Config" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}" account-type='#[vars.accountType]'/>
-		<logger level="INFO" doc:name="Log Mule Message" doc:id="b3e73c15-9f35-43dd-a9f7-7e6ba603dc85" />
+		<logger level="INFO" doc:name="Logger" doc:id="8eaa4d8b-1ac9-4851-b6e4-92b1e1291420" message="#[payload]" />
 	</flow>
 	<flow name="addAccounts" doc:id="8830a2d9-7e47-4a33-8a3d-b6c889dfd084" >
 		<http:listener doc:name="POST /accounts" doc:id="a13e4ea5-f6f5-41c8-92ca-532a479a67d6" config-ref="HTTP_Listener_config" path="/accounts" allowedMethods="POST">
@@ -54,7 +52,6 @@ http://www.mulesoft.org/schema/mule/accounts-api http://www.mulesoft.org/schema/
 }]]]></http:headers>
 			</http:response>
 		</http:listener>
-		<logger level="INFO" doc:name="Log Mule Message" doc:id="c49e8fa6-c7f2-4072-b29b-50868b7b8a87" />
 		<flow-ref doc:name="setUserID" doc:id="2c1d3170-eeb9-48cc-b78b-997de8815ae6" name="setUserID" />
 		<set-variable value="#[sizeOf(payload)]" doc:name="accountsNumber" doc:id="c6471b81-d67a-42e4-870f-e9b0ccbddc0f" variableName="accountsNumber"/>
 		<vm:publish queueName="cs-input-queue" doc:name="Publish" doc:id="fe3c2b53-497c-4e47-9bbd-0d116ea53dd8" config-ref="CS_VM_Config" timeout="10">
@@ -75,16 +72,15 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Log Mule Message" doc:id="288bad38-c4d0-4deb-8bc1-c7ce6e749dbd" />
+		<logger level="INFO" doc:name="Logger" doc:id="a225bcea-4f7a-4151-bb02-bf9c7b1246b3" message="#[payload]" />
 	</flow>
 	<flow name="readCSInputQueue" doc:id="b81e86a3-e8a2-4b83-8b2d-2e47dc687a51" >
 		<vm:listener doc:name="Listener" doc:id="1360b135-8213-4793-a898-8945bf912f46" config-ref="CS_VM_Config" queueName="cs-input-queue" timeout="10"/>
-		<logger level="INFO" doc:name="Log Mule Message" doc:id="c17b29bf-03f4-4da6-b58e-414ef6c8da24" />
 		<flow-ref doc:name="setUserID" doc:id="bcd9623d-3260-4b33-9f1c-683556a7985d" name="setUserID" />
 		<accounts-api:create-account doc:name="Create Account" doc:id="64e7230f-ac11-4fd5-b9a3-32528eb1e87f" config-ref="Accounts_API_Config" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}">
 			<accounts-api:create-account-request-data ><![CDATA[#[payload.accounts]]]></accounts-api:create-account-request-data>
 		</accounts-api:create-account>
-		<logger level="INFO" doc:name="Log Mule Message" doc:id="96f02ff7-8e21-46c5-be72-d70c06ae15c7" />
+		<logger level="INFO" doc:name="Logger" doc:id="8b9a7d6a-63e7-4872-973c-847adac9f6ff" message="#[payload]" />
 	</flow>
 	<sub-flow name="setUserID" doc:id="006f3e39-1f37-4ae2-8572-d90a868f6f95" >
 		<set-variable value="#[message.attributes.headers.user_id]" doc:name="userID" doc:id="52ec9534-5cfd-4728-90d4-575c539559f8" variableName="userID"/>
