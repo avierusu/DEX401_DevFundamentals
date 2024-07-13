@@ -3,7 +3,7 @@ http:
   hostName:        "0.0.0.0"
   port:            "8081"
 
-# Properties for HTTP Request configuration for Accounts
+# Properties for Accounts API configuration
 accounts:
   hostName:        "proxy-avier-accounts-sapi.us-e2.cloudhub.io"
   port:            "80"

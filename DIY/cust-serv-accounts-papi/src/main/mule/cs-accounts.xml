@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:accounts-api="http://www.mulesoft.org/schema/mule/accounts-api" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/accounts-api http://www.mulesoft.org/schema/mule/accounts-api/current/mule-accounts-api.xsd">
 	<flow name="getAllAccounts" doc:id="7ef9e385-7309-476d-b45d-1f46f4218a6f" >
 		<http:listener doc:name="GET /accounts" doc:id="9d84210c-af0f-4cdf-acf7-f3697155183c" config-ref="HTTP_Listener_config" path="/accounts" allowedMethods="GET"/>
 		<flow-ref doc:name="setUserID" doc:id="de144610-c744-4023-bec3-635d1323a99d" name="setUserID"/>
-		<http:request method="GET" doc:name="Invoke Accounts API" doc:id="a2ede0fe-a433-4de4-aeae-3b37fdf0fa95" config-ref="Accounts_HTTP_Request_configuration" path="/accounts">
-			<http:headers ><![CDATA[#[{
-	"userID": vars.userID,
-	"client_id": "${secure::accounts.clientId}",
-	"client_secret": "${secure::accounts.clientSecret}"
-}]]]></http:headers>
-		</http:request>
+		<accounts-api:get-accounts doc:name="Get Accounts" doc:id="31cb6a0b-c355-4935-85aa-7ce38f840dbf" config-ref="Accounts_API_Config" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}"/>
 		<logger level="INFO" doc:name="Logger" doc:id="8f3e6ebe-cb6b-4c7b-aac0-6a52813092f9" message="#[payload]"/>
 	</flow>
 	<flow name="getAccountsByName" doc:id="bdfb60ca-92c0-4548-8b4d-38a6b8e6de94">
@@ -31,16 +26,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<logger level="INFO" doc:name="Log Mule Message" doc:id="ab40072b-dd90-43a8-9826-75a2ee09621f" />
 		<flow-ref doc:name="setUserID" doc:id="0f682d42-e9b4-4aeb-b3b0-1248afcc087d" name="setUserID" />
 		<set-variable value="#[message.attributes.queryParams.name]" doc:name="accountName" doc:id="82a1a06f-1e8b-4583-ad1c-5bc954a8f81e" variableName="accountName" />
-		<http:request method="GET" doc:name="Invoke Accounts API" doc:id="e336c366-2d53-4126-91bd-a4f0b742bae5" config-ref="Accounts_HTTP_Request_configuration" path="/accounts">
-			<http:headers><![CDATA[#[{
-	"userID": vars.userID,
-	"client_id": "${secure::accounts.clientId}",
-	"client_secret": "${secure::accounts.clientSecret}"
-}]]]></http:headers>
-			<http:query-params><![CDATA[#[{
-	account_name: vars.accountName
-}]]]></http:query-params>
-		</http:request>
+		<accounts-api:get-accounts doc:name="Get Accounts" doc:id="2f2bee11-353c-4b0d-bb53-f38b0e36b648" config-ref="Accounts_API_Config" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}" account-name="#[vars.accountName]"/>
 		<logger level="INFO" doc:name="Log Mule Message" doc:id="414869dd-3b9a-4139-bba6-9aeeba0653b2"/>
 	</flow>
 	<flow name="getAccountsByType" doc:id="4daddc28-abef-4bbe-8d2b-dbbd0bf547e0">
@@ -56,16 +42,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<logger level="INFO" doc:name="Log Mule Message" doc:id="dbab41f6-f4a2-4401-a1b9-b4edeb99155e" />
 		<flow-ref doc:name="setUserID" doc:id="de1d59f3-0377-4dbe-9e80-53c5a7916897" name="setUserID" />
 		<set-variable value='#[message.attributes.queryParams.accType default "business"]' doc:name="accountType" doc:id="571cbc00-43fe-453d-b9e3-3cc0c52ab0c1" variableName="accountType" />
-		<http:request method="GET" doc:name="Invoke Accounts API" doc:id="a8863ff1-61b3-4682-8536-23926e90d2b8" config-ref="Accounts_HTTP_Request_configuration" path="/accounts" >
-			<http:headers ><![CDATA[#[{
-	"userID": vars.userID,
-	"client_id": "${secure::accounts.clientId}",
-	"client_secret": "${secure::accounts.clientSecret}"
-}]]]></http:headers>
-			<http:query-params ><![CDATA[#[{
-	account_type: vars.accountType
-}]]]></http:query-params>
-		</http:request>
+		<accounts-api:get-accounts doc:name="Get Accounts" doc:id="00e150ea-cc47-4cbc-93c5-ddbef31c011b" config-ref="Accounts_API_Config" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}" account-type='#[vars.accountType]'/>
 		<logger level="INFO" doc:name="Log Mule Message" doc:id="b3e73c15-9f35-43dd-a9f7-7e6ba603dc85" />
 	</flow>
 	<flow name="addAccounts" doc:id="8830a2d9-7e47-4a33-8a3d-b6c889dfd084" >
@@ -104,14 +81,9 @@ output application/json
 		<vm:listener doc:name="Listener" doc:id="1360b135-8213-4793-a898-8945bf912f46" config-ref="CS_VM_Config" queueName="cs-input-queue" timeout="10"/>
 		<logger level="INFO" doc:name="Log Mule Message" doc:id="c17b29bf-03f4-4da6-b58e-414ef6c8da24" />
 		<flow-ref doc:name="setUserID" doc:id="bcd9623d-3260-4b33-9f1c-683556a7985d" name="setUserID" />
-		<http:request method="POST" doc:name="POST accounts" doc:id="1792c074-3ba4-4655-b6a2-61b321059e44" config-ref="Accounts_HTTP_Request_configuration" path="/accounts">
-			<http:body ><![CDATA[#[payload.accounts]]]></http:body>
-			<http:headers ><![CDATA[#[{
-	"userID": vars.userID,
-	"client_id": "${secure::accounts.clientId}",
-	"client_secret": "${secure::accounts.clientSecret}"
-}]]]></http:headers>
-		</http:request>
+		<accounts-api:create-account doc:name="Create Account" doc:id="64e7230f-ac11-4fd5-b9a3-32528eb1e87f" config-ref="Accounts_API_Config" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}">
+			<accounts-api:create-account-request-data ><![CDATA[#[payload.accounts]]]></accounts-api:create-account-request-data>
+		</accounts-api:create-account>
 		<logger level="INFO" doc:name="Log Mule Message" doc:id="96f02ff7-8e21-46c5-be72-d70c06ae15c7" />
 	</flow>
 	<sub-flow name="setUserID" doc:id="006f3e39-1f37-4ae2-8572-d90a868f6f95" >
