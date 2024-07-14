@@ -62,7 +62,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	         payload01.city as String ++ ", " ++
 	         payload01.state as String ++ ", " ++
 	         payload01.postal as String ++ ", " ++
-	         payload01.country as String ++ ", ",
+	         payload01.country as String,
 	airMiles: payload01.miles default 0,
 	creationDate: payload01.creationDate default ""
 }]]></ee:set-payload>
@@ -92,7 +92,7 @@ output application/json
 	         payload01.city as String ++ ", " ++
 	         payload01.state as String ++ ", " ++
 	         payload01.postal as String ++ ", " ++
-	         payload01.country as String ++ ", ",
+	         payload01.country as String,
 	airMiles: payload01.miles default 0,
 	creationDate: payload01.creationDate default ""
 })[0]]]></ee:set-payload>
