@@ -7,10 +7,48 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="getAccounts" doc:id="1be01982-dd34-44a3-b7ab-58b1e2090852" >
-		<db:select doc:name="Select" doc:id="fb3d2cf5-d9d7-4358-bb4b-4f72700e8a8b" config-ref="accountsGenericDatabase">
-			<db:sql ><![CDATA[SELECT *
+		<set-variable value="#[message.attributes.queryParams.accountType]" doc:name="accountType" doc:id="6d302984-30b3-4f85-b856-8d116633f849" variableName="accountType" />
+		<set-variable value="#[message.attributes.queryParams.accountName]" doc:name="accountName" doc:id="b2b97058-8bc1-4989-9f04-e89b0941018f" variableName="accountName" />
+		<choice doc:name="Choice" doc:id="c4478ec7-357e-46d3-b5de-66191c4e4f4c" >
+			<when expression="#[(vars.accountType != null) and (vars.accountName != null)]">
+				<db:select doc:name="customersByNameAndType" doc:id="cc9cfb60-c0ba-44d4-9dd6-e3cdffd4cfae" config-ref="accountsGenericDatabase" >
+					<db:sql ><![CDATA[SELECT *
+  FROM flights_customers
+  WHERE name = :accName
+  AND accountType = :accType]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	accName: vars.accountName,
+	accType: vars.accountType
+}]]]></db:input-parameters>
+				</db:select>
+			</when>
+			<when expression="#[(vars.accountType != null) and (vars.accountName == null)]">
+				<db:select doc:name="customersByType" doc:id="252b7c43-9f5c-4a04-984d-38fee5c3dacc" config-ref="accountsGenericDatabase" >
+					<db:sql ><![CDATA[SELECT *
+  FROM flights_customers
+  WHERE accountType = :accType]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	accType: vars.accountType
+}]]]></db:input-parameters>
+				</db:select>
+			</when>
+			<when expression="#[(vars.accountType == null) and (vars.accountName != null)]">
+				<db:select doc:name="customersByName" doc:id="fa143c02-a55f-45ac-9a3f-4af5a72d5e06" config-ref="accountsGenericDatabase" >
+					<db:sql ><![CDATA[SELECT *
+  FROM flights_customers
+  WHERE name = :accName]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	accName: vars.accountName
+}]]]></db:input-parameters>
+				</db:select>
+			</when>
+			<otherwise >
+				<db:select doc:name="customers" doc:id="fb3d2cf5-d9d7-4358-bb4b-4f72700e8a8b" config-ref="accountsGenericDatabase">
+			<db:sql><![CDATA[SELECT *
   FROM flights_customers]]></db:sql>
 		</db:select>
+			</otherwise>
+		</choice>
 		<ee:transform doc:name="Transform Message" doc:id="7edba654-6024-4186-9aac-4dd0177c506e" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -33,7 +71,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 		<logger level="INFO" doc:name="Logger" doc:id="dd9ab68d-7fae-400c-9810-e5e75a8452dd" message="#[payload]"/>
 	</flow>
 	<flow name="getAccountById" doc:id="7f17d063-8686-4311-a7cb-3651afd25a76" >
-		<db:select doc:name="Select" doc:id="d8318478-6924-4776-b3df-137da91926dd" config-ref="accountsGenericDatabase">
+		<db:select doc:name="customerById" doc:id="d8318478-6924-4776-b3df-137da91926dd" config-ref="accountsGenericDatabase">
 			<db:sql ><![CDATA[SELECT *
   FROM flights_customers
   WHERE accountID = :accID]]></db:sql>
