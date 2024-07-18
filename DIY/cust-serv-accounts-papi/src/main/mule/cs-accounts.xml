@@ -1,18 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:accounts-api="http://www.mulesoft.org/schema/mule/accounts-api" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:accounts-api="http://www.mulesoft.org/schema/mule/accounts-api"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/accounts-api http://www.mulesoft.org/schema/mule/accounts-api/current/mule-accounts-api.xsd">
-	<flow name="getAllAccounts" doc:id="7ef9e385-7309-476d-b45d-1f46f4218a6f" >
+http://www.mulesoft.org/schema/mule/accounts-api http://www.mulesoft.org/schema/mule/accounts-api/current/mule-accounts-api.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<flow name="getAccounts" doc:id="7ef9e385-7309-476d-b45d-1f46f4218a6f" >
 		<http:listener doc:name="GET /accounts" doc:id="9d84210c-af0f-4cdf-acf7-f3697155183c" config-ref="HTTP_Listener_config" path="/accounts" allowedMethods="GET"/>
-		<flow-ref doc:name="setUserID" doc:id="de144610-c744-4023-bec3-635d1323a99d" name="setUserID"/>
-		<accounts-api:get-accounts doc:name="Get Accounts" doc:id="31cb6a0b-c355-4935-85aa-7ce38f840dbf" config-ref="Accounts_API_Config" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}"/>
+		<flow-ref doc:name="variablesAndValidation" doc:id="de144610-c744-4023-bec3-635d1323a99d" name="variablesAndValidation"/>
+		<choice doc:name="Choice" doc:id="7cd7d693-0818-4755-b1ef-b0703cd71982" >
+			<when expression='#[vars.condition == "AND" or isEmpty(vars.accountName)]'>
+				<accounts-api:get-accounts doc:name="Get accounts by name and type" doc:id="9a60e23e-7088-4da5-8962-37aec186aa3d" config-ref="Accounts_API_Config" account-name="#[vars.accountName]" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}" account-type="#[vars.accountType]" />
+			</when>
+			<otherwise >
+				<flow-ref doc:name="orCondition" doc:id="52ef9667-6d1a-4ca9-b507-7da1ff8ddb7b" name="orCondition"/>
+			</otherwise>
+		</choice>
 		<logger level="INFO" doc:name="Logger" doc:id="8f3e6ebe-cb6b-4c7b-aac0-6a52813092f9" message="#[payload]"/>
 	</flow>
+	<sub-flow name="orCondition" doc:id="98afbf3c-3572-4d38-b473-aed109b01d25" >
+		<scatter-gather doc:name="Scatter-Gather" doc:id="5bd357e6-b1c2-4e27-8025-33a2fa290763" >
+			<route >
+				<accounts-api:get-accounts doc:name="Get accounts by name" doc:id="d834de05-661b-4cb8-b13a-101aae3d4d71" config-ref="Accounts_API_Config" account-name="#[vars.accountName]" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}" />
+			</route>
+			<route >
+				<accounts-api:get-accounts doc:name="Get accounts by type" doc:id="a8da82a2-0247-405f-8275-a29b7a443500" config-ref="Accounts_API_Config" account-type="#[vars.accountType]" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}" />
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="8a32e6ad-af3f-45a5-b002-6426f74b4624" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+flatten(payload..*payload)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
 	<flow name="getAccountsByName" doc:id="bdfb60ca-92c0-4548-8b4d-38a6b8e6de94">
 		<http:listener doc:name="GET /accounts-by-name" doc:id="82f386e1-3ed6-472a-9836-bcceb4697c81" config-ref="HTTP_Listener_config" path="/accounts-by-name" allowedMethods="GET" >
 			<http:response >
@@ -25,7 +51,7 @@ http://www.mulesoft.org/schema/mule/accounts-api http://www.mulesoft.org/schema/
 		</http:listener>
 		<flow-ref doc:name="setUserID" doc:id="0f682d42-e9b4-4aeb-b3b0-1248afcc087d" name="setUserID" />
 		<set-variable value="#[message.attributes.queryParams.name]" doc:name="accountName" doc:id="82a1a06f-1e8b-4583-ad1c-5bc954a8f81e" variableName="accountName" />
-		<accounts-api:get-accounts doc:name="Get Accounts" doc:id="2f2bee11-353c-4b0d-bb53-f38b0e36b648" config-ref="Accounts_API_Config" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}" account-name="#[vars.accountName]"/>
+		<accounts-api:get-accounts doc:name="Get accounts by name" doc:id="2f2bee11-353c-4b0d-bb53-f38b0e36b648" config-ref="Accounts_API_Config" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}" account-name="#[vars.accountName]"/>
 		<logger level="INFO" doc:name="Logger" doc:id="c9f3cd21-cc1c-4241-b3dc-ca51a1297917" message="#[payload]" />
 	</flow>
 	<flow name="getAccountsByType" doc:id="4daddc28-abef-4bbe-8d2b-dbbd0bf547e0">
@@ -40,7 +66,7 @@ http://www.mulesoft.org/schema/mule/accounts-api http://www.mulesoft.org/schema/
 		</http:listener>
 		<flow-ref doc:name="setUserID" doc:id="de1d59f3-0377-4dbe-9e80-53c5a7916897" name="setUserID" />
 		<set-variable value='#[message.attributes.queryParams.accType default "business"]' doc:name="accountType" doc:id="571cbc00-43fe-453d-b9e3-3cc0c52ab0c1" variableName="accountType" />
-		<accounts-api:get-accounts doc:name="Get Accounts" doc:id="00e150ea-cc47-4cbc-93c5-ddbef31c011b" config-ref="Accounts_API_Config" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}" account-type='#[vars.accountType]'/>
+		<accounts-api:get-accounts doc:name="Get accounts by type" doc:id="00e150ea-cc47-4cbc-93c5-ddbef31c011b" config-ref="Accounts_API_Config" user-id="#[vars.userID]" client-id="${secure::accounts.clientId}" client-secret="${secure::accounts.clientSecret}" account-type='#[vars.accountType]'/>
 		<logger level="INFO" doc:name="Logger" doc:id="8eaa4d8b-1ac9-4851-b6e4-92b1e1291420" message="#[payload]" />
 	</flow>
 	<flow name="addAccounts" doc:id="8830a2d9-7e47-4a33-8a3d-b6c889dfd084" >
@@ -82,6 +108,14 @@ output application/json
 		</accounts-api:create-account>
 		<logger level="INFO" doc:name="Logger" doc:id="8b9a7d6a-63e7-4872-973c-847adac9f6ff" message="#[payload]" />
 	</flow>
+	<sub-flow name="variablesAndValidation" doc:id="f25da8a5-f53d-4771-80c5-7727706a5612">
+		<flow-ref doc:name="setUserID" doc:id="f0b313dd-a30c-4f8d-8c48-e63c0743fefa" name="setUserID" />
+		<set-variable value="#[message.attributes.queryParams.name]" doc:name="accountName" doc:id="3c7c404c-48e5-4be2-925e-2764788e1d94" variableName="accountName" />
+		<set-variable value='#[message.attributes.queryParams.accType default "business"]' doc:name="accountType" doc:id="218d507c-2267-4174-ab2f-e24c4ae00df7" variableName="accountType" />
+		<validation:matches-regex doc:id="d59e2603-ed64-48c1-9ef4-655e4356aa8e" value="#[vars.accountType]" doc:name="validateAccountType" regex='^(business|personal)$' message='#["Invalid accountType"]' />
+		<set-variable value='#[message.attributes.queryParams.condition default "AND"]' doc:name="condition" doc:id="43698367-650b-45bf-998d-09c8232da585" variableName="condition" />
+		<validation:matches-regex doc:id="b2df7740-6734-44b7-a56f-8f09b47e55ba" value="#[vars.condition]" regex='^(AND|OR)$' message='#["Invalid condition"]' doc:name="validateCondition" />
+	</sub-flow>
 	<sub-flow name="setUserID" doc:id="006f3e39-1f37-4ae2-8572-d90a868f6f95" >
 		<set-variable value="#[message.attributes.headers.user_id]" doc:name="userID" doc:id="52ec9534-5cfd-4728-90d4-575c539559f8" variableName="userID"/>
 	</sub-flow>
