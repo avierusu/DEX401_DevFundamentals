@@ -8,10 +8,14 @@ http://www.mulesoft.org/schema/mule/american-flights-api http://www.mulesoft.org
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
-	<flow name="mua-flights-implementationFlow" doc:id="a966faf8-fc81-4b86-8b06-a5fd6914448a" >
-		<http:listener doc:name="GET /flights" doc:id="8f4ddda4-a71b-4541-a753-0c873ee647c1" config-ref="HTTP_Listener_config" path="/flights" allowedMethods="GET" />
+	<flow name="getFlights" doc:id="a966faf8-fc81-4b86-8b06-a5fd6914448a" >
+		<http:listener doc:name="GET /flights" doc:id="8f4ddda4-a71b-4541-a753-0c873ee647c1" config-ref="HTTP_Listener_config" path="/flights" allowedMethods="GET" >
+			<http:error-response >
+				<http:body ><![CDATA[#[payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
 		<set-variable value='#[lower(message.attributes.queryParams.airline) default "all"]' doc:name="airline" doc:id="f778749d-6416-4050-a675-f83d0328f770" variableName="airline"/>
-		<flow-ref doc:name="setCode" doc:id="f1d0e49a-8319-4ac9-be6b-374deda873e1" name="setCode" />
+		<set-variable value='#[message.attributes.queryParams.code default "ALL"]' doc:name="code" doc:id="14f6b969-61f3-487c-8c00-93900f409424" variableName="code" />
 		<validation:is-true doc:name="Is valid" doc:id="a2e219ca-2a73-4c5e-b4a4-4e9628128983" expression="#[ ['ALL', 'SFO', 'LAX', 'CLE', 'PDX', 'PDF'] contains vars.code ]" message='#["Invalid destination " ++ (vars.code default " ")]'/>
 		<choice doc:name="Choice" doc:id="84615942-9ade-40d0-a33a-ca6e43d48a9d" >
 			<when expression='#[vars.airline == "american"]'>
@@ -162,7 +166,4 @@ payload.body.ns0#findFlightResponse.*return map ( return , indexOfReturn ) -> {
 			</otherwise>
 		</choice>
 	</flow>
-	<sub-flow name="setCode" doc:id="a6d148ce-5111-4909-81ad-95da06448891">
-		<set-variable value='#[message.attributes.queryParams.code default "ALL"]' doc:name="code" doc:id="7992e041-0660-46b7-a95d-95e365849974" variableName="code" />
-	</sub-flow>
 </mule>
